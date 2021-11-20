@@ -24,19 +24,13 @@ public class UserDao {
             preparedStatement.setString(2, user.getUsername());
             String hashed = hashPassword(user.getPassword());
             preparedStatement.setString(3,hashed);
-//            System.out.println(user.getPassword());
-//            System.out.println(hashed);
             preparedStatement.executeUpdate();
 
-//            int newId = findId2(preparedStatement);
-//            System.out.println("z nowej metody id = " + newId);
-
-            user.setId(findId2(preparedStatement));
+            user.setId(getGeneratedKey(preparedStatement));
             user.setPassword(hashed);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-//        user.setId(findId(user));
         user.print();
         return user;
     }
@@ -44,12 +38,7 @@ public class UserDao {
     public User read(int userId){
         String query = "SELECT * FROM users WHERE id = ?";
         User user = new User();
-
-//        System.out.println("Last Id = " + lastId()); //                         Do skasowania
-//        if (userId > 0 && userId <= lastId()){
         if (checkingId(userId)){
-
-            System.out.println(checkingId(userId));
 
             try (Connection connection = DBUtil.connect()) {
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -69,37 +58,14 @@ public class UserDao {
         } else {
             user = null;
         }
-//        if (user.getId() == 0){
-//            user = null;
-//            System.out.println("User is null");
-//        }
         return user;
     }
 
-//    public int findId3(User user){
-//        int id = 0;
-//        try (Connection connection = DBUtil.connect()) {
-//            String query = "SELECT id FROM users WHERE email = ?";
-//
-//            PreparedStatement preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setString(1, user.getEmail());
-//            ResultSet rs = preparedStatement.executeQuery();
-//            while (rs.next()) {
-//                id = rs.getInt("id");
-//                System.out.println("id= " + id);
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return id;
-//    }
-
-    public static int findId2(PreparedStatement preparedStatement) throws SQLException {
+    public static int getGeneratedKey(PreparedStatement preparedStatement) throws SQLException {
         ResultSet rs = preparedStatement.getGeneratedKeys();
         int id = 0;
         if (rs.next()) {
             id = rs.getInt(1);
-            System.out.println("Inserted ID: " + id);       //  Do Usunięcia !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         }
         return id;
     }
@@ -115,7 +81,6 @@ public class UserDao {
 
             while (rs.next()) {
                 if (id == rs.getInt("id")){
-//                    System.out.println("id= " + id);
                     ifContain = true;
                     break;
                 }
@@ -125,24 +90,6 @@ public class UserDao {
         }
         return ifContain;
     }
-
-//    public static int findId(User user){
-//        int id = 0;
-//        try (Connection connection = DBUtil.connect()) {
-//            String query = "SELECT id FROM users WHERE email = ?";
-//
-//            PreparedStatement preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setString(1, user.getEmail());
-//            ResultSet rs = preparedStatement.executeQuery();
-//            while (rs.next()) {
-//                id = rs.getInt("id");
-//                System.out.println("id= " + id);
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return id;
-//    }
 
 //    public void update2(User user){
 //        User user2 = read(user.getId());
@@ -175,10 +122,8 @@ public class UserDao {
     public void updateExistingUser(User user){
         try (Connection connection = DBUtil.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_QUERY);
-//            "UPDATE users SET email = ?, username = ?, password = ? WHERE id = ?"
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getUsername());
-//            preparedStatement.setString(3, hashPassword(user.getPassword()));
             String hashed = hashPassword(user.getPassword());
             preparedStatement.setString(3, hashed);
 
@@ -186,7 +131,6 @@ public class UserDao {
             preparedStatement.executeUpdate();
             user.setPassword(hashed);
 
-            user.print();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -202,21 +146,21 @@ public class UserDao {
         }
     }
 
-    public int lastId(){
-        int lastId = 0;
-        String query = "SELECT id FROM users ORDER BY id";
-
-        try (Connection connection = DBUtil.connect()){
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()){
-                lastId = rs.getInt("id");
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return lastId;
-    }
+//    public int lastId(){
+//        int lastId = 0;
+//        String query = "SELECT id FROM users ORDER BY id";
+//
+//        try (Connection connection = DBUtil.connect()){
+//            PreparedStatement preparedStatement = connection.prepareStatement(query);
+//            ResultSet rs = preparedStatement.executeQuery();
+//            while (rs.next()){
+//                lastId = rs.getInt("id");
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        return lastId;
+//    }
 
     public User[] findAll(){
         User[] users = new User[0];
@@ -230,7 +174,6 @@ public class UserDao {
                 user.setEmail(rs.getString("email"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
-//                user.print();
                 users = addToArray(user, users);
             }
             return users;
