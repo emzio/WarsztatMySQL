@@ -8,7 +8,7 @@ public class MainDao {
         UserDao userDao = new UserDao();
 
         // Sprawdzam create :
-//        User userToCreate = new User("1email@gmail.com", "1username", "1password");
+//        User userToCreate = new User("12email@gmail.com", "12username", "12password");
 //        userDao.create(userToCreate);
 
 //        Sprawdzam metode sparwdzania czy element o zadanym id należy do tablicy w bazie
@@ -21,10 +21,13 @@ public class MainDao {
         // Sprawdzam read:
         userDao.read(11).print();
 
-        // Sprawdzam update:
-        User userToUpdate = new User(3, "4updatedemail", "updatedusername 3", "updatedpassword3");
+//        // Sprawdzam update:
+//        User userToUpdate = new User(14, "14updatedemail", "updatedusername 14", "updatedpassword14");
 //        userDao.update(userToUpdate);
 //        userToUpdate.print();
+//        User userNotExisting = new User(20, "14updatedemail", "updatedusername 14", "updatedpassword14");
+//        userDao.update(userNotExisting);
+//        userNotExisting.print();
 
         //Sprawdzam metodę equals :
 //        User barbra = new User("15Barbaziolka@yahoo.com", "15Barbra Ziolka", "14Hasło");
@@ -33,20 +36,20 @@ public class MainDao {
 //        userDao.create(barbra);
 
         // Sprawdzam czy nieistniejący w tabeli obiekt będzie null:
-        User userToNull = userDao.read(20);
-        System.out.println("Obiekt to :" + userDao.read(20));
-        System.out.println("Czy obiekt to null : " +  (userToNull == null));
+//        User userToNull = userDao.read(20);
+//        System.out.println("Obiekt to : " + userDao.read(20));
+//        System.out.println("Czy obiekt to null : " +  (userToNull == null));
 
         // Sprawdzam delete :
 //        userDao.delete(13);
 //        userDao.read(3);
 
         // sprawdzenie czy tworzona jest tablica
-//        User[] users = userDao.findAll();
-//        System.out.println(Arrays.toString(users));
+        User[] users = userDao.findAll();
+        System.out.println(Arrays.toString(users));
 
-        // porównanie jednego elementu tablicy z bazą danych
-//        System.out.println(users[3].equals(userDao.read(6)));
+//         porównanie jednego elementu tablicy z bazą danych
+        System.out.println("Porównanie obiektu z tablicy z obiektem pobranym z bazy : " + users[3].equals(userDao.read(6)));
 
 
     }

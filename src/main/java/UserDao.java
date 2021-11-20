@@ -17,7 +17,6 @@ public class UserDao {
     }
 
     public User create (User user){
-//        String query = "INSERT INTO users (email, username, password) VALUES (?,?,?);";
 
         try (Connection connection = DBUtil.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER_QUERY, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -127,37 +126,49 @@ public class UserDao {
         return ifContain;
     }
 
-    public static int findId(User user){
-        int id = 0;
-        try (Connection connection = DBUtil.connect()) {
-            String query = "SELECT id FROM users WHERE email = ?";
+//    public static int findId(User user){
+//        int id = 0;
+//        try (Connection connection = DBUtil.connect()) {
+//            String query = "SELECT id FROM users WHERE email = ?";
+//
+//            PreparedStatement preparedStatement = connection.prepareStatement(query);
+//            preparedStatement.setString(1, user.getEmail());
+//            ResultSet rs = preparedStatement.executeQuery();
+//            while (rs.next()) {
+//                id = rs.getInt("id");
+//                System.out.println("id= " + id);
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        return id;
+//    }
 
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, user.getEmail());
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                id = rs.getInt("id");
-                System.out.println("id= " + id);
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return id;
-    }
+//    public void update2(User user){
+//        User user2 = read(user.getId());
+//        if (user2 != null){
+//            user2.setId(user.getId());
+//            user2.setEmail(user.getEmail());
+//            user2.setUsername(user.getUsername());
+//            user2.setPassword(hashPassword(user.getPassword()));
+//            System.out.println("updating");
+////            user.print();
+////            user2.print();
+//            updateExistingUser(user2);
+//        } else {
+//            System.out.println("User not exist");
+//        }
+//    }
 
     public void update(User user){
-        User user2 = read(user.getId());
-        if (user2 != null){
-            user2.setId(user.getId());
-            user2.setEmail(user.getEmail());
-            user2.setUsername(user.getUsername());
-            user2.setPassword(hashPassword(user.getPassword()));
-            System.out.println("updating");
-//            user.print();
-//            user2.print();
-            updateExistingUser(user2);
+        if (checkingId(user.getId())){
+            System.out.print("updating user : ");
+            user.print();
+            updateExistingUser(user);
         } else {
+//            user = null;
             System.out.println("User not exist");
+//            System.out.println(user==null);
         }
     }
 
@@ -167,13 +178,13 @@ public class UserDao {
 //            "UPDATE users SET email = ?, username = ?, password = ? WHERE id = ?"
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getUsername());
-            preparedStatement.setString(3, user.getPassword());
-//            String hashed = hashPassword(user.getPassword());
-//            preparedStatement.setString(3, hashed);
+//            preparedStatement.setString(3, hashPassword(user.getPassword()));
+            String hashed = hashPassword(user.getPassword());
+            preparedStatement.setString(3, hashed);
 
             preparedStatement.setInt(4, user.getId());
             preparedStatement.executeUpdate();
-//            user.setPassword(hashed);
+            user.setPassword(hashed);
 
             user.print();
         } catch (SQLException throwables) {
@@ -222,15 +233,15 @@ public class UserDao {
 //                user.print();
                 users = addToArray(user, users);
             }
+            return users;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+            return null;
         }
-        return users;
     }
 
     private User[] addToArray(User u, User[] users) {
         User[] tmpUsers = Arrays.copyOf(users, users.length + 1); // Tworzymy kopię tablicy powiększoną o 1.
-//        u.print();
         tmpUsers[users.length] = u; // Dodajemy obiekt na ostatniej pozycji.
         return tmpUsers; // Zwracamy nową tablicę.
     }
