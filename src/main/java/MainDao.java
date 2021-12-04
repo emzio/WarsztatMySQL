@@ -8,7 +8,7 @@ public class MainDao {
         UserDao userDao = new UserDao();
 
         // Sprawdzam create :
-//        User userToCreate = new User("18email@gmail.com", "18username", "18password");
+//        User userToCreate = new User("19email@gmail.com", "18username", "18password");
 //        userDao.create(userToCreate);
 
 //        Sprawdzam metode sparwdzania czy element o zadanym id należy do tablicy w bazie
